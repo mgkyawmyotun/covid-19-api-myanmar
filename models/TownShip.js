@@ -5,6 +5,11 @@ const TownShipSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  town: {
+    type: mongoose.Types.ObjectId,
+    ref: "towns",
+    required: true,
+  },
 });
 
 const TowmShip = mongoose.model("townships", TownShipSchema);

@@ -5,6 +5,10 @@ const StateSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  location: {
+    type: Array,
+    required: true,
+  },
 });
 
 const State = mongoose.model("states", StateSchema);

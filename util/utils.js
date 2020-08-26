@@ -54,6 +54,74 @@ exports.registerValidation = () => {
       .trim(),
   ];
 };
+
+exports.validateTown = () => {
+  return [
+    body("name").notEmpty().withMessage("Name Cannot be Empty"),
+    body("location")
+      .notEmpty()
+      .withMessage("location Cannot Be Empty")
+      .isArray()
+      .withMessage("location must be array"),
+    body("state_id")
+      .notEmpty()
+      .withMessage("State_id Cannot Be Empty")
+      .isMongoId()
+      .withMessage("state_id is not a valid Object id"),
+  ];
+};
+exports.validateTownShip = () => {
+  return [
+    body("name").notEmpty().withMessage("Name Cannot be Empty"),
+    body("town_id")
+      .notEmpty()
+      .withMessage("town_id Cannot Be Empty")
+      .isMongoId()
+      .withMessage("town_id is not a valid Object id"),
+  ];
+};
+exports.validateHospital = () => {
+  return [
+    body("name").notEmpty().withMessage("Name Cannot be Empty"),
+    body("town_id")
+      .notEmpty()
+      .withMessage("town_id Cannot Be Empty")
+      .isMongoId()
+      .withMessage("town_id is not a valid Object id"),
+  ];
+};
+exports.validateState = () => {
+  return [
+    body("name").notEmpty().withMessage("Name Cannot be Empty"),
+    body("location")
+      .notEmpty()
+      .withMessage("location Cannot Be Empty")
+      .isArray()
+      .withMessage("location must be array"),
+  ];
+};
+exports.validatePatient = () => {
+  return [
+    body("patient_id")
+      .notEmpty()
+      .withMessage("Patient Id Cannot Be Empty")
+      .isMongoId()
+      .withMessage("patiend_id must be valid id"),
+    body("age")
+      .notEmpty()
+      .withMessage("age cannot be empty")
+      .isNumeric()
+      .withMessage("age must be number"),
+    body("gender").withMessage("gender cannot be empty"),
+    body("state_id")
+      .withMessage("state_id cannot be empty")
+      .isMongoId.withMessage("state_id must be valid id"),
+    body("hospital_id")
+      .withMessage("hospital_id cannot be empty")
+      .isMongoId()
+      .withMessage("hospital_id cannot be empty"),
+  ];
+};
 exports.getErrorMessage = (req) => {
   const errors = validationResult(req).array();
   return errors.map((error) => {
