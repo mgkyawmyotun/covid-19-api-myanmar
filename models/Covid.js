@@ -30,6 +30,10 @@ const CovidSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "towns",
     },
+    townShip: {
+      type: Schema.Types.ObjectId,
+      ref: "townships",
+    },
     contact_person: {
       type: String,
       ref: "patients",
