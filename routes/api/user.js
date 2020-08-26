@@ -1,10 +1,11 @@
 const Router = require("express").Router();
-
+const User = require("../../models/User");
 const { isAuth } = require("../../auth");
 const {
   loginValidation,
   registerValidation,
   getErrorMessage,
+  isEqual,
 } = require("../../util/utils");
 Router.post("/user/login", [loginValidation()], async (req, res, next) => {
   const errors = getErrorMessage(req);
@@ -41,7 +42,7 @@ Router.post(
     try {
       const user = new User({ username, email, password });
       await user.save();
-      return res.status(200).json(user.getResult().getResult());
+      return res.status(200).json(user.getResult());
     } catch (error) {
       next(error);
     }

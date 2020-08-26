@@ -147,3 +147,6 @@ exports.getErrorMessage = (req) => {
     return { [error.param]: error.msg };
   });
 };
+exports.isEqual = (password, hash_password) => {
+  return bcrypt.compareSync(password, hash_password);
+};

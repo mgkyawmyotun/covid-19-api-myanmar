@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const { isAuth } = require("../../auth");
 const router = require("express").Router();
 const Patient = require("../../models/Patient");
 
@@ -42,11 +42,12 @@ router.get("/hospitals", async (req, res, next) => {
   res.json(hospitals);
 });
 
-router.post("/patient", validatePatient(), async (req, res, next) => {
+router.post("/patient", isAuth, validatePatient(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
     return res.status(404).json(errors);
   }
+  const admin_id = req.user._id;
   const {
     patient_id,
     age,
@@ -72,6 +73,7 @@ router.post("/patient", validatePatient(), async (req, res, next) => {
       oversea_country,
       date,
       contact_person,
+      admin_id,
     });
     await patient.save();
     return res.status(200).json(patient);
@@ -79,7 +81,7 @@ router.post("/patient", validatePatient(), async (req, res, next) => {
     return res.status(400).json(error);
   }
 });
-router.post("/state", validateState(), async (req, res, next) => {
+router.post("/state", isAuth, validateState(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
     return res.status(404).json(errors);
@@ -94,7 +96,7 @@ router.post("/state", validateState(), async (req, res, next) => {
     return res.status(500).json({ error: "Server Side Error", error });
   }
 });
-router.post("/town", validateTown(), async (req, res, next) => {
+router.post("/town", isAuth, validateTown(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
     return res.status(404).json(errors);
@@ -109,7 +111,7 @@ router.post("/town", validateTown(), async (req, res, next) => {
     return res.status(500).json({ error: "Server Side Error", error });
   }
 });
-router.post("/township", validateTownShip(), async (req, res, next) => {
+router.post("/township", isAuth, validateTownShip(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
     return res.status(404).json(errors);
@@ -124,7 +126,7 @@ router.post("/township", validateTownShip(), async (req, res, next) => {
     return res.status(500).json({ error: "Server Side Error", error });
   }
 });
-router.post("/hospital", validateHospital(), async (req, res, next) => {
+router.post("/hospital", isAuth, validateHospital(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
     return res.status(404).json(errors);
@@ -140,11 +142,20 @@ router.post("/hospital", validateHospital(), async (req, res, next) => {
   }
 });
 
-router.delete("/delete/patients", async (req, res, next) => {});
-router.delete("/delete/state", async (req, res, next) => {});
-router.delete("/delete/town", async (req, res, next) => {});
-router.delete("/delete/township", async (req, res, next) => {});
-router.delete("/delete/hospital", async (req, res, next) => {});
+router.delete("/delete/patient/:id", async (req, res, next) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json({ error: "id must include" });
+  try {
+    await Patient.findById(id);
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
+router.delete("/delete/state/:id", async (req, res, next) => {});
+router.delete("/delete/town/:id", async (req, res, next) => {});
+router.delete("/delete/township/:id", async (req, res, next) => {});
+router.delete("/delete/hospital/:id", async (req, res, next) => {});
 
 router.put("/edit/patients", async (req, res, next) => {});
 router.put("/edit/state", async (req, res, next) => {});

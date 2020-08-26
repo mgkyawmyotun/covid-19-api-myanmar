@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const { token } = require("../util/utils");
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -20,6 +21,7 @@ const UserSchema = new mongoose.Schema({
 });
 UserSchema.methods.getResult = function () {
   const owner = this;
+  console.log(owner);
   return { username: owner.username, email: owner.email, token: owner.token };
 };
 UserSchema.pre("save", function () {
