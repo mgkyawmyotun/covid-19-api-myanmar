@@ -13,6 +13,7 @@ const {
   validateTown,
   validateTownShip,
   validatePatient,
+  deleteValidation,
 } = require("../../util/utils");
 router.get("/all", async (req, res, next) => {
   const patients = await Patient.find({})
@@ -20,7 +21,7 @@ router.get("/all", async (req, res, next) => {
       path: "town townShip hospital state",
       select: "-_id -__v -town -state ",
     })
-    .select("-_id");
+    .select("-__v -createdAt ");
 
   res.json(patients);
 });
@@ -142,20 +143,66 @@ router.post("/hospital", isAuth, validateHospital(), async (req, res, next) => {
   }
 });
 
-router.delete("/delete/patient/:id", async (req, res, next) => {
+router.delete("/patient/:id", async (req, res, next) => {
   const { id } = req.params;
+
   if (!id) return res.status(400).json({ error: "id must include" });
+
   try {
-    await Patient.findById(id);
+    await Patient.deleteOne({ _id: id });
     return res.json({ message: "Delete Complete" });
   } catch (error) {
     return res.json({ error: error });
   }
 });
-router.delete("/delete/state/:id", async (req, res, next) => {});
-router.delete("/delete/town/:id", async (req, res, next) => {});
-router.delete("/delete/township/:id", async (req, res, next) => {});
-router.delete("/delete/hospital/:id", async (req, res, next) => {});
+router.delete("/state/:id", async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(400).json({ error: "id must include" });
+
+  try {
+    await State.deleteOne({ _id: id });
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
+router.delete("/town/:id", async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(400).json({ error: "id must include" });
+
+  try {
+    await Town.deleteOne({ _id: id });
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
+router.delete("/township/:id", async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(400).json({ error: "id must include" });
+
+  try {
+    await TownShip.deleteOne({ _id: id });
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
+router.delete("/hospital/:id", async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(400).json({ error: "id must include" });
+
+  try {
+    await Hospitals.deleteOne({ _id: id });
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
 
 router.put("/edit/patients", async (req, res, next) => {});
 router.put("/edit/state", async (req, res, next) => {});

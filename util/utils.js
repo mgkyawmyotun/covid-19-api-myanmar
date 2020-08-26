@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { body, validationResult } = require("express-validator");
-
+const { body, validationResult, param, Result } = require("express-validator");
 exports.hash = (password) => {
   return bcrypt.hashSync(password, 12);
 };
@@ -139,6 +138,15 @@ exports.validatePatient = () => {
       .withMessage("date cannot be empty")
       .isDate()
       .withMessage("date must be date type"),
+  ];
+};
+exports.deleteValidation = () => {
+  return [
+    param("id")
+      .exists()
+      .withMessage("/id need")
+      .isMongoId()
+      .withMessage("/id must be valid obj id"),
   ];
 };
 exports.getErrorMessage = (req) => {
