@@ -1,0 +1,23 @@
+{
+  "name": "covid-19-api-myanmar",
+  "version": "1.0.0",
+  "description": "cannot find flexsible api for myanmar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohamadealiyes/covid-19-api-myanmar.git"
+  },
+  "author": "kyaw myo tun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mohamadealiyes/covid-19-api-myanmar/issues"
+  },
+  "homepage": "https://github.com/mohamadealiyes/covid-19-api-myanmar#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  }
+}
