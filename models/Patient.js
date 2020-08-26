@@ -21,22 +21,25 @@ const CovidSchema = new mongoose.Schema(
     state: {
       type: Schema.Types.ObjectId,
       ref: "states",
+      required: true,
     },
     hospital: {
       type: Schema.Types.ObjectId,
       ref: "hospitals",
+      required: true,
     },
     town: {
       type: Schema.Types.ObjectId,
       ref: "towns",
+      required: true,
     },
     townShip: {
       type: Schema.Types.ObjectId,
       ref: "townships",
+      required: true,
     },
     contact_person: {
       type: String,
-      ref: "patients",
     },
     oversea: {
       type: Schema.Types.ObjectId,

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const router = require("express").Router();
-const Covid = require("../../models/Covid");
+const Patient = require("../../models/Patient");
+
 const State = require("../../models/State");
 const Town = require("../../models/Town");
 const TownShip = require("../../models/TownShip");
@@ -11,9 +12,16 @@ const {
   validateState,
   validateTown,
   validateTownShip,
+  validatePatient,
 } = require("../../util/utils");
 router.get("/all", async (req, res, next) => {
-  const patients = await Covid.find({});
+  const patients = await Patient.find({})
+    .populate({
+      path: "town townShip hospital state",
+      select: "-_id -__v -town -state ",
+    })
+    .select("-_id");
+
   res.json(patients);
 });
 
@@ -34,8 +42,11 @@ router.get("/hospitals", async (req, res, next) => {
   res.json(hospitals);
 });
 
-router.post("/patient", async (req, res, next) => {
-  const admin_id = req.user;
+router.post("/patient", validatePatient(), async (req, res, next) => {
+  const errors = getErrorMessage(req);
+  if (errors.length > 0) {
+    return res.status(404).json(errors);
+  }
   const {
     patient_id,
     age,
@@ -46,7 +57,27 @@ router.post("/patient", async (req, res, next) => {
     towns_ship_id,
     oversea_country,
     date,
+    contact_person,
   } = req.body;
+
+  try {
+    const patient = new Patient({
+      patient_id,
+      age,
+      gender,
+      state: state_id,
+      hospital: hospital_id,
+      town: town_id,
+      townShip: towns_ship_id,
+      oversea_country,
+      date,
+      contact_person,
+    });
+    await patient.save();
+    return res.status(200).json(patient);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
 });
 router.post("/state", validateState(), async (req, res, next) => {
   const errors = getErrorMessage(req);
@@ -122,7 +153,3 @@ router.put("/edit/township", async (req, res, next) => {});
 router.put("/edit/hospital", async (req, res, next) => {});
 
 module.exports = router;
-
-function isValidObjectId(id) {
-  return new ObjectId(id) === id;
-}

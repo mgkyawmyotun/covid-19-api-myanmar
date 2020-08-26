@@ -102,24 +102,43 @@ exports.validateState = () => {
 };
 exports.validatePatient = () => {
   return [
-    body("patient_id")
-      .notEmpty()
-      .withMessage("Patient Id Cannot Be Empty")
-      .isMongoId()
-      .withMessage("patiend_id must be valid id"),
+    body("patient_id").notEmpty().withMessage("Patient Id Cannot Be Empty"),
+
     body("age")
       .notEmpty()
       .withMessage("age cannot be empty")
       .isNumeric()
       .withMessage("age must be number"),
-    body("gender").withMessage("gender cannot be empty"),
+    body("gender").notEmpty().withMessage("gender cannot be empty"),
     body("state_id")
+      .notEmpty()
       .withMessage("state_id cannot be empty")
-      .isMongoId.withMessage("state_id must be valid id"),
+      .isMongoId()
+      .withMessage("state_id must be valid id"),
     body("hospital_id")
+      .notEmpty()
       .withMessage("hospital_id cannot be empty")
       .isMongoId()
-      .withMessage("hospital_id cannot be empty"),
+      .withMessage("hospital_id  must be valid id"),
+    body("town_id")
+      .notEmpty()
+      .withMessage("town_id cannot be empty")
+      .isMongoId()
+      .withMessage("town_id must be valid id"),
+    body("towns_ship_id")
+      .notEmpty()
+      .withMessage("towns_ship_id cannot be empty")
+      .isMongoId()
+      .withMessage("towns_ship_id must object id"),
+
+    body("oversea_country")
+      .notEmpty()
+      .withMessage("oversea_country cannot be empty"),
+    body("date")
+      .notEmpty()
+      .withMessage("date cannot be empty")
+      .isDate()
+      .withMessage("date must be date type"),
   ];
 };
 exports.getErrorMessage = (req) => {
