@@ -6,6 +6,7 @@ const {
   registerValidation,
   getErrorMessage,
   isEqual,
+  getErrorLogin,
 } = require("../../util/utils");
 Router.post("/user/login", [loginValidation()], async (req, res, next) => {
   const errors = getErrorMessage(req);
