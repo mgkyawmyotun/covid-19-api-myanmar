@@ -17,11 +17,9 @@ exports.isEqual = (password, hash_password) => {
 };
 
 exports.getErrorLogin = (res) => {
-  return res.status(401).json([
-    {
-      email: "Invalid Email Or Password",
-    },
-  ]);
+  return res.status(401).json({
+    email: "Invalid Email Or Password",
+  });
 };
 exports.loginValidation = () => {
   return [
