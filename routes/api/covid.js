@@ -14,6 +14,7 @@ const {
   validateTownShip,
   validatePatient,
   deleteValidation,
+  removeNull,
 } = require("../../util/utils");
 router.get("/all", async (req, res, next) => {
   const patients = await Patient.find({})
@@ -143,7 +144,7 @@ router.post("/hospital", isAuth, validateHospital(), async (req, res, next) => {
   }
 });
 
-router.delete("/patient/:id", async (req, res, next) => {
+router.delete("/patient/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ error: "id must include" });
@@ -155,7 +156,7 @@ router.delete("/patient/:id", async (req, res, next) => {
     return res.json({ error: error });
   }
 });
-router.delete("/state/:id", async (req, res, next) => {
+router.delete("/state/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ error: "id must include" });
@@ -167,7 +168,7 @@ router.delete("/state/:id", async (req, res, next) => {
     return res.json({ error: error });
   }
 });
-router.delete("/town/:id", async (req, res, next) => {
+router.delete("/town/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ error: "id must include" });
@@ -179,7 +180,7 @@ router.delete("/town/:id", async (req, res, next) => {
     return res.json({ error: error });
   }
 });
-router.delete("/township/:id", async (req, res, next) => {
+router.delete("/township/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ error: "id must include" });
@@ -191,7 +192,7 @@ router.delete("/township/:id", async (req, res, next) => {
     return res.json({ error: error });
   }
 });
-router.delete("/hospital/:id", async (req, res, next) => {
+router.delete("/hospital/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ error: "id must include" });
@@ -204,10 +205,65 @@ router.delete("/hospital/:id", async (req, res, next) => {
   }
 });
 
-router.put("/edit/patients", async (req, res, next) => {});
-router.put("/edit/state", async (req, res, next) => {});
-router.put("/edit/town", async (req, res, next) => {});
-router.put("/edit/township", async (req, res, next) => {});
-router.put("/edit/hospital", async (req, res, next) => {});
+router.put(
+  "/patient/:id",
+  isAuth,
+
+  async (req, res, next) => {
+    const admin_id = req.user._id;
+    const { id } = req.params;
+    try {
+      const patient = await Patient.updateOne(
+        { _id: id },
+        { ...req.body, admin_id }
+      );
+
+      return res.status(200).json({ message: "complete" });
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json(error);
+    }
+  }
+);
+router.put("/state/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await State.updateOne({ _id: id }, req.body);
+
+    return res.status(200).json({ message: "complete" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
+router.put("/town/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await Town.updateOne({ _id: id }, req.body);
+
+    return res.status(200).json({ message: "complete" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
+router.put("/township/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await TownShip.updateOne({ _id: id }, req.body);
+
+    return res.status(200).json({ message: "complete" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
+router.put("/hospital/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await Hospitals.updateOne({ _id: id }, req.body);
+
+    return res.status(200).json({ message: "complete" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
 
 module.exports = router;

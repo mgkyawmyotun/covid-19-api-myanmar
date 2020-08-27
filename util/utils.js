@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
 const { body, validationResult, param, Result } = require("express-validator");
 exports.hash = (password) => {
   return bcrypt.hashSync(password, 12);
@@ -157,4 +158,12 @@ exports.getErrorMessage = (req) => {
 };
 exports.isEqual = (password, hash_password) => {
   return bcrypt.compareSync(password, hash_password);
+};
+exports.removeNull = (object_value = {}) => {
+  console.log(object_value);
+  const new_obj = {};
+  for (let [k, v] of object_value.entries()) {
+    if (object_value[k]) new_obj[k] = v;
+  }
+  return new_obj;
 };
