@@ -56,11 +56,7 @@ exports.registerValidation = () => {
 exports.validateTown = () => {
   return [
     body("name").notEmpty().withMessage("Name Cannot be Empty"),
-    body("location")
-      .notEmpty()
-      .withMessage("location Cannot Be Empty")
-      .isArray()
-      .withMessage("location must be array"),
+
     body("state_id")
       .notEmpty()
       .withMessage("State_id Cannot Be Empty")
