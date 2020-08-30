@@ -20,7 +20,7 @@ router.get("/all", async (req, res, next) => {
   const patients = await Patient.find({})
     .populate({
       path: "town townShip hospital state",
-      select: "-_id -__v -town -state ",
+      select: "-location -__v -town -state ",
     })
     .select("-__v -createdAt ");
 
