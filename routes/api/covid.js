@@ -26,6 +26,11 @@ router.get("/all", async (req, res, next) => {
 
   res.json(patients);
 });
+router.get("/patient_id", async (req, res, next) => {
+  const patients = await Patient.find({}).select("patient_id -_id");
+
+  res.json(patients);
+});
 
 router.get("/states", async (req, res, next) => {
   const states = await State.find({});
