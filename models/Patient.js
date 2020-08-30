@@ -41,9 +41,8 @@ const CovidSchema = new mongoose.Schema(
     contact_person: {
       type: String,
     },
-    oversea: {
-      type: Schema.Types.ObjectId,
-      ref: "countries",
+    oversea_country: {
+      type: String,
     },
     date: {
       type: Date,
