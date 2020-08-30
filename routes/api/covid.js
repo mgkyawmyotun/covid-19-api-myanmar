@@ -38,6 +38,10 @@ router.get("/towns", async (req, res, next) => {
   });
   res.json(towns);
 });
+router.get("/townsname", async (req, res, next) => {
+  const towns = await Town.find({});
+  res.json(towns);
+});
 router.get("/townships", async (req, res, next) => {
   const townsships = await TownShip.find({})
     .populate({
