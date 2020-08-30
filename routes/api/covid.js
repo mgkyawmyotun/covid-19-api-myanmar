@@ -52,7 +52,12 @@ router.get("/townships", async (req, res, next) => {
   res.json(townsships);
 });
 router.get("/hospitals", async (req, res, next) => {
-  const hospitals = await Hospitals.find({});
+  const hospitals = await Hospitals.find({})
+    .populate({
+      path: "town",
+      select: "-state -__v",
+    })
+    .select("-__v");
   res.json(hospitals);
 });
 
