@@ -124,10 +124,6 @@ exports.validatePatient = () => {
       .withMessage("towns_ship_id cannot be empty")
       .isMongoId()
       .withMessage("towns_ship_id must object id"),
-
-    body("oversea_country")
-      .notEmpty()
-      .withMessage("oversea_country cannot be empty"),
     body("date")
       .notEmpty()
       .withMessage("date cannot be empty")
