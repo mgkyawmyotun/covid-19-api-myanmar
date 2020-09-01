@@ -1,5 +1,7 @@
 const Router = require("express").Router();
 const User = require("../../models/User");
+const { v4: uuidv4 } = require("uuid");
+const sendToken = require("../../mail");
 const { isAuth } = require("../../auth");
 const {
   loginValidation,
@@ -126,4 +128,35 @@ Router.put("/user/change", isAuth, async (req, res, next) => {
   }
 });
 
+Router.post("/user/forget", async (req, res, next) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    return res.status(404).json({ error: "User not exists with that email" });
+  }
+  user.forget_token = uuidv4();
+  user.token_date = Date.now();
+  await user.save();
+  sendToken(user.forget_token, user.email);
+  return res.status(200).json({ message: "Token Send Completed Check Email" });
+});
+Router.post("/user/new", async (req, res, next) => {
+  const { token, new_password } = req.body;
+  if (!token) return res.status(400).json({ error: "Token cannot be empty" });
+  if (!new_password)
+    return res.status(400).json({ error: "new_password cannot be empty" });
+  const user = await User.findOne({ forget_token: token });
+  if (!user) return res.status(400).json({ error: "Wrong Token" });
+  if (new_password.length < 6)
+    return res.status(400).json({ error: "Password Must Be 6 Character Long" });
+
+  if (new Date() - new Date(user.token_date) > 120000)
+    return res
+      .status(400)
+      .json({ error: "Token Expires Please Rerequest Token" });
+  user.password = new_password;
+  user.token = undefined;
+  await user.save();
+  return res.json({ message: "Password Changed Completed" });
+});
 module.exports = Router;

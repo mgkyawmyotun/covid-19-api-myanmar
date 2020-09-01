@@ -18,10 +18,17 @@ const UserSchema = new mongoose.Schema({
     max: 100,
   },
   token: {},
+  forget_token: {
+    type: String,
+    expires: 500,
+  },
+  token_date: {
+    type: Date,
+  },
 });
 UserSchema.methods.getResult = function () {
   const owner = this;
-  console.log(owner);
+
   return { username: owner.username, email: owner.email, token: owner.token };
 };
 UserSchema.pre("save", function () {
