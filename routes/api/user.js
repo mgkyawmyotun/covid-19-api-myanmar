@@ -7,6 +7,7 @@ const {
   getErrorMessage,
   isEqual,
   getErrorLogin,
+  editUserValidation,
 } = require("../../util/utils");
 Router.post("/user/login", [loginValidation()], async (req, res, next) => {
   const errors = getErrorMessage(req);
@@ -68,12 +69,17 @@ Router.get("/user/logout", isAuth, async (req, res, next) => {
   }
 });
 
-Router.put("/user", isAuth, async (req, res, next) => {
+Router.put("/user", isAuth, editUserValidation, async (req, res, next) => {
   const user = req.user;
   const { username, email } = req.body;
+  const errors = getErrorMessage(req);
+
+  if (errors.length > 0) {
+    return res.status(404).json({ error: "Email Must be valid" });
+  }
   if (user.email !== email) {
     const us = await User.findOne({ email: email });
-    if (us) return res.status(400).json({ email: "Email Already Exists" });
+    if (us) return res.status(400).json({ error: "Email Already Exists" });
   }
 
   try {

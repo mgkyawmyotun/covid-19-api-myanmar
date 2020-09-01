@@ -157,3 +157,6 @@ exports.removeNull = (object_value = {}) => {
   }
   return new_obj;
 };
+exports.editUserValidation = () => {
+  return [body("email").isEmail().withMessage("Must be a valid email")];
+};
