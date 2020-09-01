@@ -49,7 +49,7 @@ Router.post(
     if (await User.findOne({ email: email }))
       return res
         .status(404)
-        .json([{ email: "User with this email already exit" }]);
+        .json([{ error: "User with this email already exit" }]);
     try {
       const user = new User({ username, email, password });
       await user.save();
