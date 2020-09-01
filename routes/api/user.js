@@ -98,9 +98,7 @@ Router.put("/user/change", isAuth, async (req, res, next) => {
     return res.status(400).json({ error: "Please provide new password" });
 
   if (new_password.length < 6)
-    return res
-      .status(400)
-      .json({ new_password: "Password Must Be 6 Character Long" });
+    return res.status(400).json({ error: "Password Must Be 6 Character Long" });
   if (!(new_password == confirm_password))
     return res
       .status(404)
