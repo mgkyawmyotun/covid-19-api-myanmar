@@ -36,6 +36,7 @@ Router.post("/user/login", [loginValidation()], async (req, res, next) => {
 });
 Router.post(
   "/user/register",
+  isAuth,
   [registerValidation()],
   async (req, res, next) => {
     const errors = getErrorMessage(req);
@@ -44,7 +45,7 @@ Router.post(
       return res.status(404).json(errors);
     }
     const { username, email, password } = req.body;
-    console.log(req.body);
+
     if (await User.findOne({ email: email }))
       return res
         .status(404)
