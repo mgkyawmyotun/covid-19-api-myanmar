@@ -93,13 +93,9 @@ Router.put("/user/change", isAuth, async (req, res, next) => {
   const user = req.user;
   const { old_password, new_password, confirm_password } = req.body;
   if (!old_password)
-    return res
-      .status(400)
-      .json({ old_password: "Please provide old password" });
+    return res.status(400).json({ error: "Please provide old password" });
   if (!new_password)
-    return res
-      .status(400)
-      .json({ new_password: "Please provide new password" });
+    return res.status(400).json({ error: "Please provide new password" });
 
   if (new_password.length < 6)
     return res
@@ -108,18 +104,17 @@ Router.put("/user/change", isAuth, async (req, res, next) => {
   if (!(new_password == confirm_password))
     return res
       .status(404)
-      .json({ confirm_password: "Password Must Be same new and confirm" });
+      .json({ error: "Password Must Be same new and confirm" });
 
   try {
     const user_old_password = user.password;
     if (!isEqual(old_password, user_old_password))
-      return res.status(404).json({ old_password: "Old Password incorect" });
+      return res.status(404).json({ error: "Old Password incorect" });
     user.password = new_password;
     user.token = undefined;
     await user.save();
-    return res.json({ message: "Password Changed Completed" });
+    return res.json({ error: "Password Changed Completed" });
   } catch (error) {
-    console.log(error);
     res.status(400).json(error);
   }
 });
