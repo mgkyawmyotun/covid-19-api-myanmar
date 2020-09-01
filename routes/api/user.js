@@ -9,6 +9,14 @@ const {
   getErrorLogin,
   editUserValidation,
 } = require("../../util/utils");
+Router.get("/user/all", isAuth, async (req, res, next) => {
+  try {
+    const user = await User.find({}).select("-_id username email");
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+});
 Router.post("/user/login", [loginValidation()], async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
