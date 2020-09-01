@@ -69,7 +69,7 @@ Router.get("/user/logout", isAuth, async (req, res, next) => {
   }
 });
 
-Router.put("/user", isAuth, editUserValidation, async (req, res, next) => {
+Router.put("/user", isAuth, editUserValidation(), async (req, res, next) => {
   const user = req.user;
   const { username, email } = req.body;
   const errors = getErrorMessage(req);
