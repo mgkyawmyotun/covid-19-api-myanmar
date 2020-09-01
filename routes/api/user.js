@@ -111,7 +111,7 @@ Router.put("/user/change", isAuth, async (req, res, next) => {
     user.password = new_password;
     user.token = undefined;
     await user.save();
-    return res.json({ error: "Password Changed Completed" });
+    return res.json({ message: "Password Changed Completed" });
   } catch (error) {
     res.status(400).json(error);
   }
