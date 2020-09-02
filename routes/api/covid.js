@@ -16,6 +16,8 @@ const {
   deleteValidation,
   removeNull,
 } = require("../../util/utils");
+const CaseState = require("../../models/CaseState");
+const CaseTown = require("../../models/CaseTown");
 router.get("/all", async (req, res, next) => {
   const patients = await Patient.find({})
     .populate({
@@ -65,7 +67,14 @@ router.get("/hospitals", async (req, res, next) => {
     .select("-__v");
   res.json(hospitals);
 });
-
+router.get("/case/state", async (req, res, next) => {
+  const caseState = await CaseState.find({}).populate("state");
+  res.json(caseState);
+});
+router.get("/case/town", async (req, res, next) => {
+  const caseTown = await CaseTown.find({}).populate("town");
+  res.json(caseTown);
+});
 router.post("/patient", isAuth, validatePatient(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
@@ -120,6 +129,7 @@ router.post("/state", isAuth, validateState(), async (req, res, next) => {
     return res.status(500).json({ error: "Server Side Error", error });
   }
 });
+
 router.post("/town", isAuth, validateTown(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
@@ -165,7 +175,26 @@ router.post("/hospital", isAuth, validateHospital(), async (req, res, next) => {
     return res.status(500).json({ error: "Server Side Error", error });
   }
 });
-
+router.post("/case/state", isAuth, async (req, res, next) => {
+  const { state, totalDeath, totalCase } = req.body;
+  try {
+    const caseState = new CaseState({ state, totalDeath, totalCase });
+    await caseState.save();
+    return res.json(caseState);
+  } catch (error) {
+    return res.status(500).json({ error: "Server Side Error", error });
+  }
+});
+router.post("/case/town", isAuth, async (req, res, next) => {
+  const { town, totalDeath, totalCase } = req.body;
+  try {
+    const caseTown = new CaseTown({ town, totalDeath, totalCase });
+    await caseTown.save();
+    return res.json(caseTown);
+  } catch (error) {
+    return res.status(500).json({ error: "Server Side Error", error });
+  }
+});
 router.delete("/patient/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
 
@@ -226,7 +255,31 @@ router.delete("/hospital/:id", isAuth, async (req, res, next) => {
     return res.json({ error: error });
   }
 });
+router.delete("/case/state/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
 
+  if (!id) return res.status(400).json({ error: "id must include" });
+
+  try {
+    await CaseState.deleteOne({ _id: id });
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
+
+router.delete("/case/town/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(400).json({ error: "id must include" });
+
+  try {
+    await CaseTown.deleteOne({ _id: id });
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
 router.put(
   "/patient/:id",
   isAuth,
@@ -287,5 +340,24 @@ router.put("/hospital/:id", isAuth, async (req, res, next) => {
     return res.status(400).json(error);
   }
 });
+router.put("/case/state/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await CaseState.updateOne({ _id: id }, req.body);
 
+    return res.status(200).json({ message: "complete" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
+router.put("/case/town/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await CaseTown.updateOne({ _id: id }, req.body);
+
+    return res.status(200).json({ message: "complete" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
 module.exports = router;

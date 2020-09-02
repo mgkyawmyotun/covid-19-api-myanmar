@@ -156,6 +156,8 @@ Router.post("/user/new", async (req, res, next) => {
       .json({ error: "Token Expires Please Rerequest Token" });
   user.password = new_password;
   user.token = undefined;
+  user.forget_token = undefined;
+  user.token_date = undefined;
   await user.save();
   return res.json({ message: "Password Changed Completed" });
 });

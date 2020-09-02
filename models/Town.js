@@ -5,10 +5,14 @@ const TownSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   state: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "states",
+    required: true,
+  },
+  location: {
+    type: Array,
+    default: [0, 0],
     required: true,
   },
 });
