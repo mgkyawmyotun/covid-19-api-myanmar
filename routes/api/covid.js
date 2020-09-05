@@ -20,7 +20,7 @@ const CaseState = require("../../models/CaseState");
 const CaseTown = require("../../models/CaseTown");
 router.get("/all", async (req, res, next) => {
   const patients = await Patient.find({})
-    .sort({ updatedAt: -1 })
+
     .populate({
       path: "town townShip hospital state",
       select: "-location -__v -town -state ",
@@ -30,31 +30,29 @@ router.get("/all", async (req, res, next) => {
   res.json(patients);
 });
 router.get("/patient_id", async (req, res, next) => {
-  const patients = await Patient.find({})
-    .sort({ updatedAt: -1 })
-    .select("patient_id -_id");
+  const patients = await Patient.find({}).select("patient_id -_id");
 
   res.json(patients);
 });
 
 router.get("/states", async (req, res, next) => {
-  const states = await State.find({}).sort({ updatedAt: -1 });
+  const states = await State.find({});
   res.json(states);
 });
 router.get("/towns", async (req, res, next) => {
-  const towns = await Town.find({}).sort({ updatedAt: -1 }).populate({
+  const towns = await Town.find({}).populate({
     path: "state",
     select: "-location",
   });
   res.json(towns);
 });
 router.get("/townsname", async (req, res, next) => {
-  const towns = await Town.find({}).sort({ updatedAt: -1 });
+  const towns = await Town.find({});
   res.json(towns);
 });
 router.get("/townships", async (req, res, next) => {
   const townsships = await TownShip.find({})
-    .sort({ updatedAt: -1 })
+
     .populate({
       path: "town",
       select: "-state -__v",
@@ -64,7 +62,7 @@ router.get("/townships", async (req, res, next) => {
 });
 router.get("/hospitals", async (req, res, next) => {
   const hospitals = await Hospitals.find({})
-    .sort({ updatedAt: -1 })
+
     .populate({
       path: "town",
       select: "-state -__v",
@@ -73,15 +71,13 @@ router.get("/hospitals", async (req, res, next) => {
   res.json(hospitals);
 });
 router.get("/case/state", async (req, res, next) => {
-  const caseState = await CaseState.find({})
-    .populate("state")
-    .sort({ updatedAt: -1 });
+  const caseState = await CaseState.find({}).populate("state");
+
   res.json(caseState);
 });
 router.get("/case/town", async (req, res, next) => {
-  const caseTown = await CaseTown.find({})
-    .populate("town")
-    .sort({ updatedAt: -1 });
+  const caseTown = await CaseTown.find({}).populate("town");
+
   res.json(caseTown);
 });
 router.post("/patient", isAuth, validatePatient(), async (req, res, next) => {
