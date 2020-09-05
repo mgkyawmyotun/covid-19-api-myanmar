@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 const covid = require("./routes/api/covid");
 const User = require("./routes/api/user");
 dotenv.config();
