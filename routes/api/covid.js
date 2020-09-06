@@ -181,9 +181,14 @@ router.post("/hospital", isAuth, validateHospital(), async (req, res, next) => {
   }
 });
 router.post("/case/state", isAuth, async (req, res, next) => {
-  const { state, totalDeath, totalCase } = req.body;
+  const { state, totalDeath, totalCase, recovered } = req.body;
   try {
-    const caseState = new CaseState({ state, totalDeath, totalCase });
+    const caseState = new CaseState({
+      state,
+      totalDeath,
+      totalCase,
+      recovered,
+    });
     await caseState.save();
     return res.json(caseState);
   } catch (error) {
@@ -191,9 +196,9 @@ router.post("/case/state", isAuth, async (req, res, next) => {
   }
 });
 router.post("/case/town", isAuth, async (req, res, next) => {
-  const { town, totalDeath, totalCase } = req.body;
+  const { town, totalDeath, totalCase, recovered } = req.body;
   try {
-    const caseTown = new CaseTown({ town, totalDeath, totalCase });
+    const caseTown = new CaseTown({ town, totalDeath, totalCase, recovered });
     await caseTown.save();
     return res.json(caseTown);
   } catch (error) {

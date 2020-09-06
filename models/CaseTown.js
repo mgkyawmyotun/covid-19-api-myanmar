@@ -7,11 +7,16 @@ const CaseTownSchema = new mongoose.Schema(
       ref: "towns",
       required: true,
     },
-    death: {
+    totalDeath: {
       type: Number,
       default: 0,
     },
     totalCase: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    recovered: {
       type: Number,
       default: 0,
       required: true,
