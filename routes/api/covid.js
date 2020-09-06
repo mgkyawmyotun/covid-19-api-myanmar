@@ -18,6 +18,15 @@ const {
 } = require("../../util/utils");
 const CaseState = require("../../models/CaseState");
 const CaseTown = require("../../models/CaseTown");
+router.get("/getTotal", async (req, res, next) => {
+  const caseStates = await CaseState.find({});
+  const total = caseStates.reduce((ac, cs) => ({
+    totalCase: ac.totalCase + cs.totalCase,
+    totalDeath: ac.totalDeath + cs.totalDeath,
+    recovered: ac.recovered + cs.recovered,
+  }));
+  res.json(total);
+});
 router.get("/all", async (req, res, next) => {
   const patients = await Patient.find({})
 
