@@ -90,12 +90,18 @@ router.get("/hospitals", async (req, res, next) => {
   res.json(hospitals);
 });
 router.get("/case/state", async (req, res, next) => {
-  const caseState = await CaseState.find({}).populate("state");
+  const caseState = await CaseState.find({}).populate({
+    path: "state",
+    select: "name",
+  });
 
   res.json(caseState);
 });
 router.get("/case/town", async (req, res, next) => {
-  const caseTown = await CaseTown.find({}).populate("town");
+  const caseTown = await CaseTown.find({}).populate({
+    path: "town",
+    select: "name",
+  });
 
   res.json(caseTown);
 });
