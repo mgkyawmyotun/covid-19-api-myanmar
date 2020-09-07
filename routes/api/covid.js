@@ -52,7 +52,10 @@ router.get("/states", async (req, res, next) => {
   res.json(states);
 });
 router.get("/districts", async (req, res, next) => {
-  const districts = await District.find({});
+  const districts = await District.find({}).populate({
+    path: "state",
+    select: "name",
+  });
   res.json(districts);
 });
 router.get("/towns", async (req, res, next) => {
