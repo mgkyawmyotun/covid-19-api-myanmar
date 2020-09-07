@@ -105,8 +105,10 @@ router.get("/case/town", async (req, res, next) => {
 //   res.json(caseTown);
 // });
 router.get("/case/district", async (req, res, next) => {
-  const caseDistrict = await CaseDistrict.find({}).populate("district");
-  console.log(caseDistrict);
+  const caseDistrict = await CaseDistrict.find({}).populate({
+    path: "district",
+    select: "name",
+  });
   res.json(caseDistrict);
 });
 router.get("/case/district/:name", async (req, res, next) => {
