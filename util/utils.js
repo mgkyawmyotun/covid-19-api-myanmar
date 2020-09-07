@@ -94,6 +94,12 @@ exports.validateState = () => {
       .withMessage("location must be array"),
   ];
 };
+exports.validateDistrict = () => {
+  return [
+    body("name").notEmpty().withMessage("Name Cannot be Empty"),
+    body("state_id").notEmpty().withMessage("State_id Cannot Be Empty"),
+  ];
+};
 exports.validatePatient = () => {
   return [
     body("patient_id").notEmpty().withMessage("Patient Id Cannot Be Empty"),

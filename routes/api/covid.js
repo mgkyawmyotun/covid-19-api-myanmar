@@ -15,9 +15,12 @@ const {
   validatePatient,
   deleteValidation,
   removeNull,
+  validateDistrict,
 } = require("../../util/utils");
 const CaseState = require("../../models/CaseState");
 const CaseTown = require("../../models/CaseTown");
+const District = require("../../models/District");
+const CaseDistrict = require("../../models/CaseDistrict");
 router.get("/getTotal", async (req, res, next) => {
   const caseStates = await CaseState.find({});
   const total = caseStates.reduce((ac, cs) => ({
@@ -47,6 +50,10 @@ router.get("/patient_id", async (req, res, next) => {
 router.get("/states", async (req, res, next) => {
   const states = await State.find({});
   res.json(states);
+});
+router.get("/districts", async (req, res, next) => {
+  const districts = await District.find({});
+  res.json(districts);
 });
 router.get("/towns", async (req, res, next) => {
   const towns = await Town.find({}).populate({
@@ -88,6 +95,34 @@ router.get("/case/town", async (req, res, next) => {
   const caseTown = await CaseTown.find({}).populate("town");
 
   res.json(caseTown);
+});
+// router.get("/case/town/:name", async (req, res, next) => {
+//   const { name } = req.params;
+//   const caseTown = await CaseTown.find({ name: name }).populate("town");
+//   res.json(caseTown);
+// });
+router.get("/case/district", async (req, res, next) => {
+  const caseDistrict = await CaseDistrict.find({}).populate("district");
+  console.log(caseDistrict);
+  res.json(caseDistrict);
+});
+router.get("/case/district/:name", async (req, res, next) => {
+  const { name } = req.params;
+  const district = await District.findOne({ name: name });
+  if (!district) res.status(404).json({ error: "District Not Foun" });
+  const caseDistrict = await CaseDistrict.find({ district: district }).populate(
+    "district"
+  );
+  res.json(caseDistrict);
+});
+router.get("/case/district/getTotal/:name", async (req, res, next) => {
+  const caseStates = await CaseState.find({});
+  const total = caseStates.reduce((ac, cs) => ({
+    totalCase: ac.totalCase + cs.totalCase,
+    totalDeath: ac.totalDeath + cs.totalDeath,
+    recovered: ac.recovered + cs.recovered,
+  }));
+  res.json(total);
 });
 router.post("/patient", isAuth, validatePatient(), async (req, res, next) => {
   const errors = getErrorMessage(req);
@@ -143,7 +178,20 @@ router.post("/state", isAuth, validateState(), async (req, res, next) => {
     return res.status(500).json({ error: "Server Side Error", error });
   }
 });
-
+router.post("/district", isAuth, validateDistrict(), async (req, res, next) => {
+  const errors = getErrorMessage(req);
+  if (errors.length > 0) {
+    return res.status(404).json(errors);
+  }
+  const { name, state_id } = req.body;
+  try {
+    const district = new District({ name, state: state_id });
+    await district.save();
+    return res.json(district);
+  } catch (error) {
+    return res.status(500).json({ error: "Server Side Error", error });
+  }
+});
 router.post("/town", isAuth, validateTown(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
@@ -214,6 +262,22 @@ router.post("/case/town", isAuth, async (req, res, next) => {
     return res.status(500).json({ error: "Server Side Error", error });
   }
 });
+router.post("/case/district", isAuth, async (req, res, next) => {
+  const { district, totalDeath, totalCase, recovered } = req.body;
+  try {
+    const caseDistrict = new CaseDistrict({
+      district,
+      totalDeath,
+      totalCase,
+      recovered,
+    });
+    await caseDistrict.save();
+    return res.json(caseDistrict);
+  } catch (error) {
+    return res.status(500).json({ error: "Server Side Error", error });
+  }
+});
+
 router.delete("/patient/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
 
@@ -233,6 +297,18 @@ router.delete("/state/:id", isAuth, async (req, res, next) => {
 
   try {
     await State.deleteOne({ _id: id });
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
+router.delete("/district/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(400).json({ error: "id must include" });
+
+  try {
+    await District.deleteOne({ _id: id });
     return res.json({ message: "Delete Complete" });
   } catch (error) {
     return res.json({ error: error });
@@ -299,6 +375,18 @@ router.delete("/case/town/:id", isAuth, async (req, res, next) => {
     return res.json({ error: error });
   }
 });
+router.delete("/case/district/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(400).json({ error: "id must include" });
+
+  try {
+    await CaseDistrict.deleteOne({ _id: id });
+    return res.json({ message: "Delete Complete" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
 router.put(
   "/patient/:id",
   isAuth,
@@ -323,6 +411,16 @@ router.put("/state/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
   try {
     await State.updateOne({ _id: id }, req.body);
+
+    return res.status(200).json({ message: "complete" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
+router.put("/district/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await District.updateOne({ _id: id }, req.body);
 
     return res.status(200).json({ message: "complete" });
   } catch (error) {
@@ -373,6 +471,16 @@ router.put("/case/town/:id", isAuth, async (req, res, next) => {
   const { id } = req.params;
   try {
     await CaseTown.updateOne({ _id: id }, req.body);
+
+    return res.status(200).json({ message: "complete" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
+router.put("/case/district/:id", isAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await CaseDistrict.updateOne({ _id: id }, req.body);
 
     return res.status(200).json({ message: "complete" });
   } catch (error) {
