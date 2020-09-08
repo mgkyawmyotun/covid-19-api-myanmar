@@ -613,12 +613,21 @@ router.get("/caseConnection.json", async (req, res, next) => {
         type: "Letter",
         "Favorite Dessert": "shave ice",
       },
+      {
+        label: "C",
+        type: "Letters",
+        "Favorite Desserts": "shave ice",
+      },
     ],
     connections: [
       {
         from: "A",
         to: "B",
         type: "likes",
+      },
+      {
+        from: "A",
+        to: "C",
       },
     ],
   });
