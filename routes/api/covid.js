@@ -22,121 +22,173 @@ const CaseTown = require("../../models/CaseTown");
 const District = require("../../models/District");
 const CaseDistrict = require("../../models/CaseDistrict");
 router.get("/getTotal", async (req, res, next) => {
-  const caseStates = await CaseState.find({});
-  const total = caseStates.reduce((ac, cs) => ({
-    totalCase: ac.totalCase + cs.totalCase,
-    totalDeath: ac.totalDeath + cs.totalDeath,
-    recovered: ac.recovered + cs.recovered,
-  }));
-  res.json(total);
+  try {
+    const caseStates = await CaseState.find({});
+    const total = caseStates.reduce((ac, cs) => ({
+      totalCase: ac.totalCase + cs.totalCase,
+      totalDeath: ac.totalDeath + cs.totalDeath,
+      recovered: ac.recovered + cs.recovered,
+    }));
+    res.json(total);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 });
 router.get("/getTotal/:name", async (req, res, next) => {
   const { name } = req.params;
-  const caseState = await CaseState.find()
-    .populate({
-      path: "state",
-      select: "name",
-    })
-    .exec((err, result) => {
-      const { totalCase, totalDeath, recovered } = result.filter(
-        (r) => r.state.name.toLowerCase() == name.toLowerCase()
-      )[0];
-      res.json({
-        totalCase,
-        totalDeath,
-        recovered,
+  try {
+    const caseState = await CaseState.find()
+      .populate({
+        path: "state",
+        select: "name",
+      })
+      .exec((err, result) => {
+        const { totalCase, totalDeath, recovered } = result.filter(
+          (r) => r.state.name.toLowerCase() == name.toLowerCase()
+        )[0];
+        res.json({
+          totalCase,
+          totalDeath,
+          recovered,
+        });
       });
-    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 });
 router.get("/all", async (req, res, next) => {
-  const patients = await Patient.find({})
+  try {
+    const patients = await Patient.find({})
 
-    .populate({
-      path: "town townShip hospital state",
-      select: "-location -__v -town -state ",
-    })
-    .select("-__v -createdAt ");
+      .populate({
+        path: "town townShip hospital state",
+        select: "-location -__v -town -state ",
+      })
+      .select("-__v -createdAt ");
 
-  res.json(patients);
+    res.json(patients);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/patient_id", async (req, res, next) => {
-  const patients = await Patient.find({}).select("patient_id -_id");
+  try {
+    const patients = await Patient.find({}).select("patient_id -_id");
 
-  res.json(patients);
+    res.json(patients);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 router.get("/states", async (req, res, next) => {
-  const states = await State.find({});
-  res.json(states);
+  try {
+    const states = await State.find({});
+    res.json(states);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/districts/:state_name", async (req, res, next) => {
   const { state_name } = req.params;
-  let districts = [];
-  await District.find({})
-    .populate({
-      path: "state",
-      select: "name",
-    })
-    .exec((err, result) => {
-      districts = result.filter(
-        (r) => r.state.name.toLowerCase() === state_name.toLowerCase()
-      );
-      res.json(districts);
-    });
+  try {
+    let districts = [];
+    await District.find({})
+      .populate({
+        path: "state",
+        select: "name",
+      })
+      .exec((err, result) => {
+        districts = result.filter(
+          (r) => r.state.name.toLowerCase() === state_name.toLowerCase()
+        );
+        res.json(districts);
+      });
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/districts", async (req, res, next) => {
-  const districts = await District.find({}).populate({
-    path: "state",
-    select: "name",
-  });
-  res.json(districts);
+  try {
+    const districts = await District.find({}).populate({
+      path: "state",
+      select: "name",
+    });
+    res.json(districts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/towns", async (req, res, next) => {
-  const towns = await Town.find({}).populate({
-    path: "state",
-    select: "-location",
-  });
-  res.json(towns);
+  try {
+    const towns = await Town.find({}).populate({
+      path: "state",
+      select: "-location",
+    });
+    res.json(towns);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/townsname", async (req, res, next) => {
-  const towns = await Town.find({});
-  res.json(towns);
+  try {
+    const towns = await Town.find({});
+    res.json(towns);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/townships", async (req, res, next) => {
-  const townsships = await TownShip.find({})
+  try {
+    const townsships = await TownShip.find({})
 
-    .populate({
-      path: "town",
-      select: "-state -__v",
-    })
-    .select("-__v");
-  res.json(townsships);
+      .populate({
+        path: "town",
+        select: "-state -__v",
+      })
+      .select("-__v");
+    res.json(townsships);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/hospitals", async (req, res, next) => {
-  const hospitals = await Hospitals.find({})
+  try {
+    const hospitals = await Hospitals.find({})
 
-    .populate({
-      path: "town",
-      select: "-state -__v",
-    })
-    .select("-__v");
-  res.json(hospitals);
+      .populate({
+        path: "town",
+        select: "-state -__v",
+      })
+      .select("-__v");
+    res.json(hospitals);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/case/state", async (req, res, next) => {
-  const caseState = await CaseState.find({}).populate({
-    path: "state",
-    select: "name",
-  });
+  try {
+    const caseState = await CaseState.find({}).populate({
+      path: "state",
+      select: "name",
+    });
 
-  res.json(caseState);
+    res.json(caseState);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/case/town", async (req, res, next) => {
-  const caseTown = await CaseTown.find({}).populate({
-    path: "town",
-    select: "name",
-  });
+  try {
+    const caseTown = await CaseTown.find({}).populate({
+      path: "town",
+      select: "name",
+    });
 
-  res.json(caseTown);
+    res.json(caseTown);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 // router.get("/case/town/:name", async (req, res, next) => {
 //   const { name } = req.params;
@@ -144,30 +196,38 @@ router.get("/case/town", async (req, res, next) => {
 //   res.json(caseTown);
 // });
 router.get("/case/district", async (req, res, next) => {
-  const caseDistrict = await CaseDistrict.find({}).populate({
-    path: "district",
-    select: "name",
-  });
-  res.json(caseDistrict);
+  try {
+    const caseDistrict = await CaseDistrict.find({}).populate({
+      path: "district",
+      select: "name",
+    });
+    res.json(caseDistrict);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 router.get("/case/district/:state_name", async (req, res, next) => {
   const { state_name } = req.params;
-  let districts = [];
-  await CaseDistrict.find({})
-    .populate({
-      path: "district",
-      select: "name state",
-      populate: {
-        path: "state",
-        select: "name",
-      },
-    })
-    .exec((err, result) => {
-      districts = result.filter(
-        (r) => r.district.state.name.toLowerCase() == state_name.toLowerCase()
-      );
-      res.json(districts);
-    });
+  try {
+    let districts = [];
+    await CaseDistrict.find({})
+      .populate({
+        path: "district",
+        select: "name state",
+        populate: {
+          path: "state",
+          select: "name",
+        },
+      })
+      .exec((err, result) => {
+        districts = result.filter(
+          (r) => r.district.state.name.toLowerCase() == state_name.toLowerCase()
+        );
+        res.json(districts);
+      });
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 router.post("/patient", isAuth, validatePatient(), async (req, res, next) => {
