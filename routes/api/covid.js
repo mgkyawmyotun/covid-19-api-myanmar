@@ -229,8 +229,7 @@ router.get("/case/district/:state_name", async (req, res, next) => {
           (r) => r.district.state.name.toLowerCase() == state_name.toLowerCase()
         );
         res.json(districts);
-      })
-      .catch((err) => res.status(500).json(err));
+      });
   } catch (error) {
     res.status(500).json(error);
   }
