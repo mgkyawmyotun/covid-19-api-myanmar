@@ -37,22 +37,25 @@ router.get("/getTotal", async (req, res, next) => {
 router.get("/getTotal/:name", async (req, res, next) => {
   const { name } = req.params;
   try {
-    const caseState = await CaseState.find()
+    await CaseState.find()
       .populate({
         path: "state",
         select: "name",
       })
       .exec((err, result) => {
-        const { totalCase, totalDeath, recovered } = result.filter(
-          (r) => r.state.name.toLowerCase() == name.toLowerCase()
-        )[0];
-        res.json({
-          totalCase,
-          totalDeath,
-          recovered,
-        });
-      })
-      .catch((err) => res.status(500).json(err));
+        try {
+          const { totalCase, totalDeath, recovered } = result.filter(
+            (r) => r.state.name.toLowerCase() == name.toLowerCase()
+          )[0];
+          res.json({
+            totalCase,
+            totalDeath,
+            recovered,
+          });
+        } catch (error) {
+          return res.status(400).json({ error: "State not found" });
+        }
+      });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -163,9 +166,9 @@ router.get("/hospitals", async (req, res, next) => {
         select: "-state -__v",
       })
       .select("-__v");
-    res.json(hospitals);
+    return res.json(hospitals);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 router.get("/case/state", async (req, res, next) => {
@@ -175,9 +178,9 @@ router.get("/case/state", async (req, res, next) => {
       select: "name",
     });
 
-    res.json(caseState);
+    return res.json(caseState);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 router.get("/case/town", async (req, res, next) => {
