@@ -598,4 +598,30 @@ router.put("/case/district/:id", isAuth, async (req, res, next) => {
     return res.status(400).json(error);
   }
 });
+
+router.get("/caseConnection.json", async (req, res, next) => {
+  return res.json({
+    elements: [
+      {
+        label: "A",
+        type: "Letter",
+        description: "This is A",
+        tags: ["one", "two"],
+      },
+      {
+        label: "B",
+        type: "Letter",
+        "Favorite Dessert": "shave ice",
+      },
+    ],
+    connections: [
+      {
+        from: "A",
+        to: "B",
+        type: "likes",
+      },
+    ],
+  });
+});
+
 module.exports = router;
