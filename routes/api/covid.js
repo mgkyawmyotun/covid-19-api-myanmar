@@ -30,6 +30,24 @@ router.get("/getTotal", async (req, res, next) => {
   }));
   res.json(total);
 });
+router.get("/getTotal/:name", async (req, res, next) => {
+  const { name } = req.params;
+  const caseState = await CaseState.find()
+    .populate({
+      path: "state",
+      select: "name",
+    })
+    .exec((err, result) => {
+      const { totalCase, totalDeath, recovered } = result.filter(
+        (r) => r.state.name.toLowerCase() == name.toLowerCase()
+      )[0];
+      res.json({
+        totalCase,
+        totalDeath,
+        recovered,
+      });
+    });
+});
 router.get("/all", async (req, res, next) => {
   const patients = await Patient.find({})
 
@@ -50,6 +68,21 @@ router.get("/patient_id", async (req, res, next) => {
 router.get("/states", async (req, res, next) => {
   const states = await State.find({});
   res.json(states);
+});
+router.get("/districts/:state_name", async (req, res, next) => {
+  const { state_name } = req.params;
+  let districts = [];
+  await District.find({})
+    .populate({
+      path: "state",
+      select: "name",
+    })
+    .exec((err, result) => {
+      districts = result.filter(
+        (r) => r.state.name.toLowerCase() === state_name.toLowerCase()
+      );
+      res.json(districts);
+    });
 });
 router.get("/districts", async (req, res, next) => {
   const districts = await District.find({}).populate({
@@ -117,24 +150,26 @@ router.get("/case/district", async (req, res, next) => {
   });
   res.json(caseDistrict);
 });
-router.get("/case/district/:name", async (req, res, next) => {
-  const { name } = req.params;
-  const district = await District.findOne({ name: name });
-  if (!district) res.status(404).json({ error: "District Not Foun" });
-  const caseDistrict = await CaseDistrict.find({ district: district }).populate(
-    "district"
-  );
-  res.json(caseDistrict);
+router.get("/case/district/:state_name", async (req, res, next) => {
+  const { state_name } = req.params;
+  let districts = [];
+  await CaseDistrict.find({})
+    .populate({
+      path: "district",
+      select: "name state",
+      populate: {
+        path: "state",
+        select: "name",
+      },
+    })
+    .exec((err, result) => {
+      districts = result.filter(
+        (r) => r.district.state.name.toLowerCase() == state_name.toLowerCase()
+      );
+      res.json(districts);
+    });
 });
-router.get("/case/district/getTotal/:name", async (req, res, next) => {
-  const caseStates = await CaseState.find({});
-  const total = caseStates.reduce((ac, cs) => ({
-    totalCase: ac.totalCase + cs.totalCase,
-    totalDeath: ac.totalDeath + cs.totalDeath,
-    recovered: ac.recovered + cs.recovered,
-  }));
-  res.json(total);
-});
+
 router.post("/patient", isAuth, validatePatient(), async (req, res, next) => {
   const errors = getErrorMessage(req);
   if (errors.length > 0) {
