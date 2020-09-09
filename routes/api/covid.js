@@ -21,7 +21,7 @@ const CaseState = require("../../models/CaseState");
 const CaseTown = require("../../models/CaseTown");
 const District = require("../../models/District");
 const CaseDistrict = require("../../models/CaseDistrict");
-const { restart } = require("nodemon");
+
 router.get("/getTotal", async (req, res, next) => {
   try {
     const caseStates = await CaseState.find({});
