@@ -196,11 +196,7 @@ router.get("/case/town", async (req, res, next) => {
     res.status(500).json(error);
   }
 });
-// router.get("/case/town/:name", async (req, res, next) => {
-//   const { name } = req.params;
-//   const caseTown = await CaseTown.find({ name: name }).populate("town");
-//   res.json(caseTown);
-// });
+
 router.get("/case/district", async (req, res, next) => {
   try {
     const caseDistrict = await CaseDistrict.find({}).populate({
@@ -620,23 +616,16 @@ router.get("/caseConnection.json", async (req, res, next) => {
       Date: patient.updateAt,
     });
     if (patient.contact_person !== "No") {
-      console.log("Contact Person");
+      connections.push({
+        from: patient.contact_person,
+        to: patient.patient_id,
+      });
     }
   });
 
   return res.json({
     elements,
-    connections: [
-      {
-        from: "A",
-        to: "B",
-        type: "likes",
-      },
-      {
-        from: "A",
-        to: "C",
-      },
-    ],
+    connections,
   });
 });
 
