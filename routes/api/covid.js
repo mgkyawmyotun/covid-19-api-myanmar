@@ -623,26 +623,9 @@ router.get("/caseConnection.json", async (req, res, next) => {
       console.log("Contact Person");
     }
   });
-  return res.json(elements);
+
   return res.json({
-    elements: [
-      {
-        label: "A",
-        type: "Letter",
-        description: "This is A",
-        tags: ["one", "two"],
-      },
-      {
-        label: "B",
-        type: "Letter",
-        "Favorite Dessert": "shave ice",
-      },
-      {
-        label: "C",
-        type: "Letters",
-        "Favorite Desserts": "shave ice",
-      },
-    ],
+    elements,
     connections: [
       {
         from: "A",
