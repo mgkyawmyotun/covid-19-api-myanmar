@@ -21,6 +21,7 @@ const CaseState = require("../../models/CaseState");
 const CaseTown = require("../../models/CaseTown");
 const District = require("../../models/District");
 const CaseDistrict = require("../../models/CaseDistrict");
+const { restart } = require("nodemon");
 router.get("/getTotal", async (req, res, next) => {
   try {
     const caseStates = await CaseState.find({});
@@ -600,6 +601,29 @@ router.put("/case/district/:id", isAuth, async (req, res, next) => {
 });
 
 router.get("/caseConnection.json", async (req, res, next) => {
+  const elements = [];
+  const connections = [];
+  const patients = await Patient.find({}).populate({
+    path: "state hospital town townShip",
+    select: "-_id name",
+  });
+  patients.forEach((patient) => {
+    elements.push({
+      label: patient.patient_id,
+      age: patient.age,
+      gender: patient.gender,
+      townName: patient.town.name,
+      townShipName: patient.townShip.name,
+      stateName: patient.state.name,
+      HosptialName: patient.hospital.name,
+      contact_person: patient.contact_person,
+      Date: patient.updateAt,
+    });
+    if (patient.contact_person !== "No") {
+      console.log("Contact Person");
+    }
+  });
+  return res.json(elements);
   return res.json({
     elements: [
       {
