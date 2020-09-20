@@ -1,7 +1,7 @@
 const Router = require("express").Router();
 const User = require("../../models/User");
 const { v4: uuidv4 } = require("uuid");
-const sendToken,{sendMessage} = require("../../mail");
+const { sendForgetToken, sendMessage } = require("../../mail");
 const { isAuth } = require("../../auth");
 const {
   loginValidation,
@@ -137,7 +137,7 @@ Router.post("/user/forget", async (req, res, next) => {
   user.forget_token = uuidv4();
   user.token_date = Date.now();
   await user.save();
-  sendToken(user.forget_token, user.email);
+  sendForgetToken(user.forget_token, user.email);
   return res.status(200).json({ message: "Token Send Completed Check Email" });
 });
 Router.post("/user/new", async (req, res, next) => {
@@ -162,12 +162,17 @@ Router.post("/user/new", async (req, res, next) => {
   return res.json({ message: "Password Changed Completed" });
 });
 Router.post("/send/message", (req, res, next) => {
-  const {username,message} =req.body;
+  const { username, message } = req.body;
+  if (!username)
+    return res.status(400).json({ error: "Username Cannot Be Empty" });
+  if (!message)
+    return res.status(400).json({ error: "Message Cannot Be Empty" });
   try {
-  sendMessage(username,message);
-
+    sendMessage(username, message);
+    return res.status(200).json({ message: "Send Message To Admin Complete" });
   } catch (error) {
-    return res.status(500).json({message:"Internal Server Error"});
+    console.log(error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 module.exports = Router;
