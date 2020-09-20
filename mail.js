@@ -1,13 +1,14 @@
 const sgMail = require("@sendgrid/mail");
 
-exports.sendMessage = (username, message) => {
+exports.sendMessage = (username, email, message) => {
   const msg = {
     to: "kyawmyotun472001@gmail.com",
     from: "k.7m8t6@gmail.com",
     subject: "User Message ",
 
     html: `
-    <h1>Username - ${username}</h1>
+    <h3>Username - ${username}</h3>
+    <h3>From Email - ${email} </h3>
     <br>
     <p>${message}</p>
   `,

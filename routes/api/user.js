@@ -162,13 +162,14 @@ Router.post("/user/new", async (req, res, next) => {
   return res.json({ message: "Password Changed Completed" });
 });
 Router.post("/send/message", (req, res, next) => {
-  const { username, message } = req.body;
+  const { username, message, email } = req.body;
   if (!username)
     return res.status(400).json({ error: "Username Cannot Be Empty" });
   if (!message)
     return res.status(400).json({ error: "Message Cannot Be Empty" });
+  if (!email) return res.status(400).json({ error: " Email Cannot Be Empty" });
   try {
-    sendMessage(username, message);
+    sendMessage(username, email, message);
     return res.status(200).json({ message: "Send Message To Admin Complete" });
   } catch (error) {
     console.log(error);
