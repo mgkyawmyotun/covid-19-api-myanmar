@@ -1,7 +1,7 @@
 const Router = require("express").Router();
 const User = require("../../models/User");
 const { v4: uuidv4 } = require("uuid");
-const sendToken = require("../../mail");
+const sendToken,{sendMessage} = require("../../mail");
 const { isAuth } = require("../../auth");
 const {
   loginValidation,
@@ -160,5 +160,14 @@ Router.post("/user/new", async (req, res, next) => {
   user.token_date = undefined;
   await user.save();
   return res.json({ message: "Password Changed Completed" });
+});
+Router.post("/send/message", (req, res, next) => {
+  const {username,message} =req.body;
+  try {
+  sendMessage(username,message);
+
+  } catch (error) {
+    return res.status(500).json({message:"Internal Server Error"});
+  }
 });
 module.exports = Router;
