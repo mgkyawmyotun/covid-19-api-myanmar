@@ -33,3 +33,6 @@ $ npm run dev
 ##### you can test api from PostMan
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://god.postman.co/run-collection/ff2b796ad6c40816b68b#?env%5Bcovid10Production%5D=W3sia2V5IjoidXJsIiwidmFsdWUiOiJodHRwczovL3N0YXJrLWNyYWctMDA3MzEuaGVyb2t1YXBwLmNvbS8iLCJlbmFibGVkIjp0cnVlfV0=)
+
+## OR Test in public
+[![Check In Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/12801820/TVKBZysW)
