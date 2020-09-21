@@ -18,7 +18,7 @@ You Can Check all  libray i use on this app on [package.json](https://github.com
 
 ### Installation
 
-This project requires [Node.js](https://nodejs.org/) v8+ to run.
+This project requires [Node.js](https://nodejs.org/) v4+ to run.
 Install the dependencies and devDependencies and start the server.
 Firstly you need to set .env to work properly,
 
@@ -29,5 +29,7 @@ $ npm i -D
 $ npm run dev
 ```
 # Doucmentation
-You can found the public endpoint url of [covid-19-api-myanmar](https://stark-crag-00731.herokuapp.com/api/all) on heroku 
+#### You can found the public endpoint url of [covid-19-api-myanmar](https://stark-crag-00731.herokuapp.com/api/all) on heroku 
+##### you can test api from PostMan
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.postman.co/run-collection/ff2b796ad6c40816b68b#?env%5Bcovid10Production%5D=W3sia2V5IjoidXJsIiwidmFsdWUiOiJodHRwczovL3N0YXJrLWNyYWctMDA3MzEuaGVyb2t1YXBwLmNvbS8iLCJlbmFibGVkIjp0cnVlfV0=)
