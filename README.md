@@ -36,3 +36,7 @@ $ npm run dev
 
 ## OR Test in public
 [![Check In Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/12801820/TVKBZysW)
+
+## License
+##### [MIT](https://choosealicense.com/licenses/mit/)
+Copyright (c) 2020, Kyaw Myo Tun
