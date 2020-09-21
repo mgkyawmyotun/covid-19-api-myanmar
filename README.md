@@ -18,7 +18,7 @@ You Can Check all  libray i use on this app on [package.json](https://github.com
 
 ### Installation
 
-This project requires [Node.js](https://nodejs.org/) v4+ to run.
+This project requires [Node.js](https://nodejs.org/) v8+ to run.
 Install the dependencies and devDependencies and start the server.
 Firstly you need to set .env to work properly,
 
