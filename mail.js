@@ -1,20 +1,26 @@
 const sgMail = require("@sendgrid/mail");
+const User = require("./models/User");
 
-exports.sendMessage = (username, email, message) => {
-  const msg = {
-    to: "kyawmyotun472001@gmail.com",
-    from: "k.7m8t6@gmail.com",
-    subject: "User Message ",
+exports.sendMessage = async (username, email, message) => {
+  const messages = [];
+  const users = await User.find({});
+  for (user of users) {
+    messages.push({
+      to: user.email,
+      from: "k.7m8t6@gmail.com",
+      subject: "User Message ",
 
-    html: `
-    <h3>Username - ${username}</h3>
-    <h3>From Email - ${email} </h3>
-    <br>
-    <p>${message}</p>
-  `,
-  };
+      html: `
+      <h3>Username - ${username}</h3>
+      <h3>From Email - ${email} </h3>
+      <br>
+      <p>${message}</p>
+    `,
+    });
+  }
+
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  sgMail.send(msg).catch(console.log);
+  sgMail.send(messages).then(console.log).catch(console.log);
 };
 exports.sendForgetToken = (token, email) => {
   const msg = {
