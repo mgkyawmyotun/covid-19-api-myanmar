@@ -501,26 +501,24 @@ router.put(
 
   async (req, res, next) => {
     const admin_id = req.user._id;
-    const { id } = req.params;
+    const id = req.params.id;
     try {
       const patient = await Patient.updateOne(
         { _id: id },
         { ...req.body, admin_id }
       );
-
-      return res.status(200).json({ message: "complete" });
+      return res.status(200).json({ message: "completed" });
     } catch (error) {
-      console.log(error);
       return res.status(400).json(error);
     }
   }
 );
 router.put("/state/:id", isAuth, async (req, res, next) => {
-  const { id } = req.params;
+  const id =req.params.id
   try {
     await State.updateOne({ _id: id }, req.body);
 
-    return res.status(200).json({ message: "complete" });
+    return res.status(200).json({ message: "completed" });
   } catch (error) {
     return res.status(400).json(error);
   }
